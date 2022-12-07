@@ -1,8 +1,11 @@
 library(dplyr)
 library(gganimate)
 
+
 remotes::install_github("wiscostret/fplscrapR")
+remotes::install_github("r-rust/gifski")
 library(fplscrapR)
+library(gifski)
 library(ggplot2)
 
 
@@ -27,18 +30,19 @@ mytheme <- theme(axis.line=element_blank(),
                  plot.background=element_blank(),
                  plot.margin = margin(2,2, 2, 4, "cm"))
 
-cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442")
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2")
 
 
 
 
 
 #ids for each team
-ids <- c(3521912,
-         1014999,
-         3577869,
-         1623282,
-         2260523)
+ids <- c(1394037,
+         1402453,
+         403111,
+         4757456,
+         4495043,
+         4302983)
 
 #scrape data
 route1NZ <- lapply(ids, get_entry_season)
@@ -83,7 +87,7 @@ ggplot(route1_df, aes(x=total_points, y=name, fill=name)) +
 
 
 # Animation
-
+anim<-
 ggplot(route1_df, aes(total_points, group = name, 
                                   fill = as.factor(name), color = as.factor(name))) +
   geom_tile(aes(y = total_points, height = total_points,width = 30),
@@ -112,9 +116,3 @@ animate(anim, 400, fps = 5,  width = 800, height = 400,
         renderer = gifski_renderer("fpl_titleRace.gif"), end_pause = 15, start_pause =  15) 
 
 
-# For MP4
-
-animate(anim, 200, fps = 20,  width = 1200, height = 1000, 
-        renderer = ffmpeg_renderer()) -> for_mp4
-
-anim_save("animation.mp4", animation = for_mp4 )
